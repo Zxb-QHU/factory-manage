@@ -1,0 +1,76 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="{% static 'base.css' %}">
+    <link rel="stylesheet" href="{% static 'home.css' %}">
+    <link rel="stylesheet" href="{% static 'bootstrap-3.37/css/bootstrap.min.css' %}">
+</head>
+<body>
+<div class="container">
+    <h2>青海省招标信息</h2>
+    <br>
+    <br>
+<a class="btn btn-default right" href="{% url 'home' %}" role="button">返回首页</a>
+<a class="btn btn-default right" href="{% url 'bidding' %}?key=update" role="button">更新招标信息</a>
+    <br>
+    <br>
+    <nav aria-label="Page navigation">
+        <table class="table">
+            {#        项目名称,url,公告类型,招标方式,地区,时间#}
+            <tr>
+                <td>项目名称</td>
+                <td>公告类型</td>
+                <td>招标方式</td>
+                <td>地区</td>
+                <td>时间</td>
+                <td>详情</td>
+            </tr>
+            {% for data in page.object_list %}
+                <tr>
+                    <td>{{ data.项目名称 }}</td>
+                    <td>{{ data.公告类型 }}</td>
+                    <td>{{ data.招标方式 }}</td>
+                    <td>{{ data.地区 }}</td>
+                    <td>{{ data.时间 }}</td>
+                    <td><a onclick="window.open('{{ data.url }}', '_blank')">详情</a></td>
+                </tr>
+            {% endfor %}
+        </table>
+        <div class="center-block">
+            <ul class="pagination">
+                {% if page.has_previous %}
+                    {# page.has_previous: 判断当前页page是否含有上一页的属性 #}
+                    {# page.previous_page_number：上一页的页码 #}
+                    <li>
+                        <a href="?page={{ page.previous_page_number }}" aria-label="Previous">
+                            <span aria-hidden="true">上一页</span>
+                        </a>
+                    </li>
+                {% endif %}
+                {# 每次点击页码，这20次循环都会从头开始循环。 #}
+                {% for page_number in page.paginator.page_range %}
+                    {% if page_number == page.number %}
+                        {# 如果当前查询的页码和循环的页码刚好相等 #}
+                        <li class="active"><a href="?page={{ page_number }}">{{ page_number }}</a></li>
+                    {% else %}
+                        <li><a href="?page={{ page_number }}">{{ page_number }}</a></li>
+                    {% endif %}
+                {% endfor %}
+                {% if page.has_next %}
+                    <li>
+                        <a href="?page={{ page.next_page_number }}" aria-label="Previous">
+                            <span aria-hidden="true">下一页</span>
+                        </a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
+</div>
+
+
+</body>
+</html>
